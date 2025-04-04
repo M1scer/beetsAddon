@@ -1,15 +1,27 @@
-# Home Assistant Add-on: Example add-on
+# Beets Music Organizer Home Assistant Add-On
 
-_Example add-on to use as a blueprint for new add-ons._
+This add-on uses [beets](https://beets.io) to organize music files and enrich their metadata.
 
-![Supports aarch64 Architecture][aarch64-shield]
-![Supports amd64 Architecture][amd64-shield]
-![Supports armhf Architecture][armhf-shield]
-![Supports armv7 Architecture][armv7-shield]
-![Supports i386 Architecture][i386-shield]
+## Installation
 
-[aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
-[amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
-[armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
-[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
-[i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
+1. Upload this repository to GitHub.
+2. In Home Assistant, add the repository URL under *Supervisor → Add-On Store → Add-on Repository*.
+3. Install the add-on from the Home Assistant Add-On Store.
+4. In the add-on settings, configure the following options:
+   - `music_input_dir`: Path to the directory where music files are stored.
+   - `music_output_dir`: Path to the directory where files will be moved and sorted.
+   - `import_timeout`: Time in seconds to wait for additional file changes before triggering the import.
+   - `beets_import_args`: Additional arguments to pass to the beets import command (e.g., "--move").
+5. Start the add-on.
+
+## How It Works
+
+Upon starting, the add-on:
+- Waits for file changes in the configured input directory using `inotifywait`.
+- Starts a timeout period (default: 60 seconds) to collect additional changes.
+- Once no changes are detected within the timeout period, it triggers beets to import, enrich metadata, and move the files using the configured import arguments.
+- Files are organized based on the beets configuration (e.g., sorted by artist).
+
+## Customization
+
+To customize further (e.g., additional beets options, plugins, or functionality), adjust the commands in `run.sh`.
